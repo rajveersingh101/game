@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fun Interactive Name Game</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    user-select: none;
+  }
+  #game-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 0 20px #2575fc;
+  }
+  h1 {
+    margin-bottom: 1rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+  input[type="text"] {
+    padding: 0.8rem;
+    width: 80%;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+  }
+  input[type="text"]:focus {
+    box-shadow: 0 0 10px #6a11cb;
+  }
+  button {
+    cursor: pointer;
+    padding: 0.8rem 2rem;
+    background: #2575fc;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #6a11cb;
+  }
+  #welcome-text {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  #dice {
+    font-size: 6rem;
+    animation: shake 0.8s ease;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 1rem;
+  }
+  #roll-message {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes shake {
+    0% { transform: rotate(0deg);}
+    25% { transform: rotate(15deg);}
+    50% { transform: rotate(-15deg);}
+    75% { transform: rotate(15deg);}
+    100% { transform: rotate(0deg);}
+  }
+</style>
+</head>
+<body>
+<div id="game-container">
+  <div id="name-input-section">
+    <h1>What's your name?</h1>
+    <input type="text" id="username" placeholder="Enter your name" autocomplete="off" />
+    <br />
+    <button id="start-btn" disabled>Start Game</button>
+  </div>
+  <div id="game-section" style="display:none;">
+    <div id="welcome-text"></div>
+    <div id="dice" title="Click to roll the dice">🎲</div>
+    <div id="roll-message">Click the dice to roll!</div>
+  </div>
+</div>
+
+<script>
+  const usernameInput = document.getElementById('username');
+  const startBtn = document.getElementById('start-btn');
+  const nameInputSection = document.getElementById('name-input-section');
+  const gameSection = document.getElementById('game-section');
+  const welcomeText = document.getElementById('welcome-text');
+  const dice = document.getElementById('dice');
+  const rollMessage = document.getElementById('roll-message');
+
+  // Enable start button only if input is not empty
+  usernameInput.addEventListener('input', () => {
+    startBtn.disabled = usernameInput.value.trim() === '';
+  });
+
+  startBtn.addEventListener('click', () => {
+    const name = usernameInput.value.trim();
+    if (name) {
+      // Hide input section, show game section
+      nameInputSection.style.display = 'none';
+      gameSection.style.display = 'block';
+      welcomeText.textContent = `Welcome, ${name}! Let's play a dice roll game.`;
+    }
+  });
+
+  dice.addEventListener('click', () => {
+    dice.style.animation = 'shake 0.8s ease';
+    rollMessage.textContent = 'Rolling...';
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 6) + 1;
+      dice.textContent = roll;
+      rollMessage.textContent = roll === 6
+        ? '🎉 Amazing! You rolled a 6!'
+        : `You rolled a ${roll}. Try again!`;
+    }, 800);
+  });
+
+  // Remove animation after it ends to allow re-trigger
+  dice.addEventListener('animationend', () => {
+    dice.style.animation = '';
+  });
+</script>
+</body>
+</html>

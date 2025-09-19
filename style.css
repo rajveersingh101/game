@@ -169,35 +169,68 @@ h3 {
   justify-content: center;
   height: 80vh;
   width: 100%;
+  background: linear-gradient(135deg, #224ca4, #1f2f61);
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  user-select: none;
 }
+
+.name-screen h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #a7c2da;
+  letter-spacing: 0.15rem;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
 .name-screen input[type="text"] {
-  font-size: 20px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid var(--secondary-color);
-  margin-bottom: 10px;
-  width: 250px;
+  font-size: 22px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 2px solid var(--light-color);
+  margin-bottom: 15px;
+  width: 280px;
   text-align: center;
   outline: none;
+  color: #1f2f61;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+.name-screen input[type="text"]:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 10px var(--secondary-color);
+}
+
 .name-screen button {
   cursor: pointer;
   background-color: var(--secondary-color);
   color: var(--light-color);
   border: none;
-  padding: 10px 20px;
-  font-size: 18px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
+  padding: 12px 30px;
+  font-size: 20px;
+  border-radius: 8px;
+  letter-spacing: 0.1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.1s ease;
 }
+
+.name-screen button:hover:enabled {
+  background-color: #1f2f61;
+  transform: scale(1.05);
+}
+
 .name-screen button:disabled {
   background-color: #555;
   cursor: not-allowed;
+  transform: none;
 }
+
 .error-text {
   color: #ff6666;
-  height: 20px;
+  height: 22px;
   font-size: 16px;
   margin-top: 0;
   margin-bottom: 10px;
+  min-height: 22px;
 }

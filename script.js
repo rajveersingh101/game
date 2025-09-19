@@ -52,6 +52,7 @@ function validateName(name) {
 }
 
 // Handle enabling/disabling submit button based on name input validity
+// Use "input" event not "change"
 nameInput.addEventListener("input", () => {
   const value = nameInput.value.trim();
   if (validateName(value)) {
@@ -66,6 +67,7 @@ nameInput.addEventListener("input", () => {
     }
   }
 });
+
 
 // Start game on name submit
 nameSubmit.addEventListener("click", () => {

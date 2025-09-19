@@ -1,144 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Fun Interactive Name Game</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    user-select: none;
-  }
-  #game-container {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 20px;
-    padding: 2rem;
-    width: 350px;
-    text-align: center;
-    box-shadow: 0 0 20px #2575fc;
-  }
-  h1 {
-    margin-bottom: 1rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-  }
-  input[type="text"] {
-    padding: 0.8rem;
-    width: 80%;
-    border-radius: 50px;
-    border: none;
-    outline: none;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    text-align: center;
-    transition: box-shadow 0.3s ease;
-  }
-  input[type="text"]:focus {
-    box-shadow: 0 0 10px #6a11cb;
-  }
-  button {
-    cursor: pointer;
-    padding: 0.8rem 2rem;
-    background: #2575fc;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: white;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: #6a11cb;
-  }
-  #welcome-text {
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-  #dice {
-    font-size: 6rem;
-    animation: shake 0.8s ease;
-    cursor: pointer;
-    user-select: none;
-    margin-bottom: 1rem;
-  }
-  #roll-message {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  @keyframes shake {
-    0% { transform: rotate(0deg);}
-    25% { transform: rotate(15deg);}
-    50% { transform: rotate(-15deg);}
-    75% { transform: rotate(15deg);}
-    100% { transform: rotate(0deg);}
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gen Z Color Memory Challenge</title>
+  <style>
+    /* Cool gradient background */
+    body {
+      background: linear-gradient(130deg, #ff416c, #ff4b2b);
+      height: 100vh;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      overflow: hidden;
+      user-select: none;
+      flex-direction: column;
+      padding: 20px;
+    }
+    h1 {
+      font-weight: 700;
+      margin-bottom: 5px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    #nameInputSection,
+    #gameSection {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 25px;
+      padding: 2rem 3rem;
+      width: 350px;
+      box-shadow: 0 8px 20px rgba(255,75,43,0.5);
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    #nameInput {
+      border-radius: 30px;
+      border: none;
+      padding: 0.8rem;
+      text-align: center;
+      font-size: 1.2rem;
+      width: 85%;
+      margin-bottom: 1.3rem;
+      outline: none;
+      font-weight: 600;
+      letter-spacing: 1px;
+      transition: box-shadow 0.3s ease;
+    }
+    #nameInput:focus {
+      box-shadow: 0 0 8px #ff4b2b;
+    }
+    button {
+      background: #fff;
+      color: #ff4b2b;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 30px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+    button:disabled {
+      background: #ffbbbb;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      background: #ff1e00;
+      color: white;
+    }
+    #welcomeText {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    #colorButtons {
+      display: flex;
+      justify-content: space-around;
+      margin: 2rem 0;
+    }
+    .colorBtn {
+      width: 75px;
+      height: 75px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      user-select: none;
+      filter: drop-shadow(0 0 7px rgba(0,0,0,0.25));
+    }
+    .colorBtn:active {
+      transform: scale(0.85);
+      box-shadow: 0 0 20px #fff;
+    }
+    .red { background: #ff4b2b; }
+    .green { background: #25cc79; }
+    .blue { background: #1e90ff; }
+    .yellow { background: #ffeb3b; }
+    
+    .highlight {
+      animation: glow 0.6s ease forwards;
+    }
+    @keyframes glow {
+      0% { box-shadow: 0 0 15px white; filter: brightness(1.5); }
+      100% { box-shadow: 0 0 0 transparent; filter: brightness(1); }
+    }
+    #score {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-top: 10px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    #message {
+      font-size: 1.1rem;
+      margin-top: 10px;
+      min-height: 28px;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
-<div id="game-container">
-  <div id="name-input-section">
-    <h1>What's your name?</h1>
-    <input type="text" id="username" placeholder="Enter your name" autocomplete="off" />
+  <div id="nameInputSection">
+    <h1>Enter your name to start</h1>
+    <input type="text" id="nameInput" placeholder="Your name" autocomplete="off" />
     <br />
-    <button id="start-btn" disabled>Start Game</button>
+    <button id="startBtn" disabled>Start</button>
   </div>
-  <div id="game-section" style="display:none;">
-    <div id="welcome-text"></div>
-    <div id="dice" title="Click to roll the dice">🎲</div>
-    <div id="roll-message">Click the dice to roll!</div>
+
+  <div id="gameSection" style="display:none;">
+    <div id="welcomeText"></div>
+    <div id="colorButtons">
+      <div class="colorBtn red" data-color="red"></div>
+      <div class="colorBtn green" data-color="green"></div>
+      <div class="colorBtn blue" data-color="blue"></div>
+      <div class="colorBtn yellow" data-color="yellow"></div>
+    </div>
+    <div id="score">Score: 0</div>
+    <div id="message"></div>
   </div>
-</div>
 
-<script>
-  const usernameInput = document.getElementById('username');
-  const startBtn = document.getElementById('start-btn');
-  const nameInputSection = document.getElementById('name-input-section');
-  const gameSection = document.getElementById('game-section');
-  const welcomeText = document.getElementById('welcome-text');
-  const dice = document.getElementById('dice');
-  const rollMessage = document.getElementById('roll-message');
+  <script>
+    const nameInput = document.getElementById('nameInput');
+    const startBtn = document.getElementById('startBtn');
+    const nameInputSection = document.getElementById('nameInputSection');
+    const gameSection = document.getElementById('gameSection');
+    const welcomeText = document.getElementById('welcomeText');
+    const colorButtons = Array.from(document.querySelectorAll('.colorBtn'));
+    const scoreDisplay = document.getElementById('score');
+    const message = document.getElementById('message');
 
-  // Enable start button only if input is not empty
-  usernameInput.addEventListener('input', () => {
-    startBtn.disabled = usernameInput.value.trim() === '';
-  });
+    let userName = '';
+    let sequence = [];
+    let playerSequence = [];
+    let score = 0;
+    let acceptingInput = false;
 
-  startBtn.addEventListener('click', () => {
-    const name = usernameInput.value.trim();
-    if (name) {
-      // Hide input section, show game section
+    nameInput.addEventListener('input', () => {
+      startBtn.disabled = nameInput.value.trim() === '';
+    });
+
+    startBtn.addEventListener('click', () => {
+      userName = nameInput.value.trim();
+      if (!userName) return;
       nameInputSection.style.display = 'none';
       gameSection.style.display = 'block';
-      welcomeText.textContent = `Welcome, ${name}! Let's play a dice roll game.`;
+      welcomeText.textContent = `Hello, ${userName}! Repeat the sequence by clicking colors.`;
+      nextRound();
+    });
+
+    function nextRound() {
+      acceptingInput = false;
+      message.textContent = 'Watch the sequence!';
+      playerSequence = [];
+      sequence.push(randomColor());
+      playSequence(sequence).then(() => {
+        message.textContent = 'Your turn!';
+        acceptingInput = true;
+      });
     }
-  });
 
-  dice.addEventListener('click', () => {
-    dice.style.animation = 'shake 0.8s ease';
-    rollMessage.textContent = 'Rolling...';
+    function randomColor() {
+      const colors = ['red', 'green', 'blue', 'yellow'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
 
-    setTimeout(() => {
-      const roll = Math.floor(Math.random() * 6) + 1;
-      dice.textContent = roll;
-      rollMessage.textContent = roll === 6
-        ? '🎉 Amazing! You rolled a 6!'
-        : `You rolled a ${roll}. Try again!`;
-    }, 800);
-  });
+    function playSequence(seq) {
+      return new Promise(async (resolve) => {
+        for (let color of seq) {
+          await highlightButton(color);
+          await delay(400);
+        }
+        resolve();
+      });
+    }
 
-  // Remove animation after it ends to allow re-trigger
-  dice.addEventListener('animationend', () => {
-    dice.style.animation = '';
-  });
-</script>
+    function highlightButton(color) {
+      return new Promise((res) => {
+        const btn = colorButtons.find(b => b.dataset.color === color);
+        btn.classList.add('highlight');
+        // Sound or vibration can be added here for more engagement
+        setTimeout(() => {
+          btn.classList.remove('highlight');
+          res();
+        }, 700);
+      });
+    }
+
+    function delay(ms) {
+      return new Promise(res => setTimeout(res, ms));
+    }
+
+    colorButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if (!acceptingInput) return;
+        const clickedColor = button.dataset.color;
+        playerSequence.push(clickedColor);
+        highlightButton(clickedColor);
+        checkPlayerMove(playerSequence.length - 1);
+      });
+    });
+
+    function checkPlayerMove(index) {
+      if (playerSequence[index] !== sequence[index]) {
+        gameOver();
+        return;
+      }
+      if (playerSequence.length === sequence.length) {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        message.textContent = 'Nice! Get ready for the next round...';
+        setTimeout(() => {
+          nextRound();
+        }, 1200);
+      }
+    }
+
+    function gameOver() {
+      acceptingInput = false;
+      message.textContent = `Game over, ${userName}! Your final score is ${score}. Refresh to play again.`;
+      // Could add restart button here if desired
+    }
+  </script>
 </body>
 </html>

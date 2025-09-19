@@ -12,17 +12,92 @@ const finalMessage = document.getElementById("final-message");
 const finalMessageRevealWord = document.getElementById("final-message-reveal-word");
 const figureParts = document.querySelectorAll(".figure-part");
 const keyboardContainer = document.getElementById("keyboard");
-// Removed fixed words array - replaced by API fetch
+
+const words = [
+  "application",
+  "programming",
+  "interface",
+  "wizard",
+  "element",
+  "prototype",
+  "callback",
+  "undefined",
+  "arguments",
+  "settings",
+  "selector",
+  "container",
+  "instance",
+  "response",
+  "console",
+  "constructor",
+  "token",
+  "function",
+  "return",
+  "length",
+  "type",
+  "node",
+  "cat",
+  "dog",
+  "sun",
+  "hat",
+  "run",
+  "bed",
+  "fish",
+  "tree",
+  "ball",
+  "star",
+  "book",
+  "jump",
+  "frog",
+  "cake",
+  "rain",
+  "doll",
+  "shoe",
+  "moon",
+  "milk",
+  "leaf",
+  "duck",
+  "lamp",
+  "door",
+  "ship",
+  "kite",
+  "nose",
+  "ring",
+  "baby",
+  "blue",
+  "hand",
+  "apple",
+  "banana",
+  "cherry",
+  "grape",
+  "lemon",
+  "melon",
+  "peach",
+  "pear",
+  "plum",
+  "grass",
+  "river",
+  "cloud",
+  "earth",
+  "water",
+  "light",
+  "sound",
+  "voice",
+  "fire"
+];
+
 let selectedWord = "";
 let playable = false;
 const correctLetters = [];
 const wrongLetters = [];
 let playerName = "";
+
 // Validate name input - only letters, max 15 chars
 function validateName(name) {
   const regex = /^[a-zA-Z]{1,15}$/;
   return regex.test(name);
 }
+
 // Enable/disable start button based on validity
 nameInput.addEventListener("input", () => {
   const value = nameInput.value.trim();
@@ -38,26 +113,10 @@ nameInput.addEventListener("input", () => {
     }
   }
 });
-// Fetch a random word from external API
-async function fetchRandomWord() {
-  try {
-    const response = await fetch('https://random-word-api.herokuapp.com/word?number=1');
-    const data = await response.json();
-    const word = data[0].toLowerCase();
-    if (/^[a-z]{3,15}$/.test(word)) {
-      return word;
-    } else {
-      return fetchRandomWord(); // recursive retry if invalid word
-    }
-  } catch (error) {
-    console.error('Error fetching random word:', error);
-    // fallback to a default word
-    return 'javascript';
-  }
-}
-// Start game - async to wait for word fetch
-async function startGame() {
-  selectedWord = await fetchRandomWord();
+
+// Start game by picking a random word from the fixed array
+function startGame() {
+  selectedWord = words[Math.floor(Math.random() * words.length)];
   playable = true;
   correctLetters.splice(0);
   wrongLetters.splice(0);
@@ -67,31 +126,30 @@ async function startGame() {
   popup.style.display = "none";
   notification.classList.remove("show");
 }
+
 // On clicking start button on name screen
-nameSubmit.addEventListener("click", async () => {
+nameSubmit.addEventListener("click", () => {
   const name = nameInput.value.trim();
   if (!validateName(name)) {
     nameError.textContent = "Please enter a valid name (letters only, max 15 chars)";
     return;
   }
   playerName = name;
-  // Push name_entered event to dataLayer
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: "name_entered",
     name: playerName,
   });
-  // Switch screens
   nameScreen.style.display = "none";
   gameScreen.style.display = "block";
-  // Start game with random word
-  await startGame();
+  startGame();
 });
-// Generate the on-screen keyboard buttons A-Z
+
+// Generate on-screen keyboard buttons A-Z
 function createKeyboard() {
   const letters = "abcdefghijklmnopqrstuvwxyz".split("");
   keyboardContainer.innerHTML = "";
-  letters.forEach((letter) => {
+  letters.forEach(letter => {
     const button = document.createElement("button");
     button.classList.add("keyboard-button");
     button.innerText = letter.toUpperCase();
@@ -102,27 +160,19 @@ function createKeyboard() {
     keyboardContainer.appendChild(button);
   });
 }
+
 // Display the hidden word with correctly guessed letters
 function displayWord() {
-  wordElement.innerHTML = `
-    ${selectedWord
-      .split("")
-      .map(
-        (letter) => `
-          <span class="letter">
-            ${correctLetters.includes(letter) ? letter : ""}
-          </span>
-        `
-      )
-      .join("")}
-  `;
+  wordElement.innerHTML = selectedWord.split("").map(letter => `
+    <span class="letter">${correctLetters.includes(letter) ? letter : ""}</span>
+  `).join("");
+
   const innerWord = wordElement.innerText.replace(/\n/g, "");
   if (innerWord === selectedWord) {
     finalMessage.innerText = `Congratulations ${playerName}! You won! 😃`;
     finalMessageRevealWord.innerText = "";
     popup.style.display = "flex";
     playable = false;
-    // Push name_guessed event to dataLayer
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: "name_guessed",
@@ -130,22 +180,24 @@ function displayWord() {
     });
   }
 }
+
 // Update wrong letters display and hangman figure parts
 function updateWrongLettersElement() {
   wrongLettersElement.innerHTML = `
     ${wrongLetters.length > 0 ? "<p>Wrong</p>" : ""}
-    ${wrongLetters.map((letter) => `<span>${letter}</span>`).join(" ")}
+    ${wrongLetters.map(letter => `<span>${letter}</span>`).join(" ")}
   `;
+
   figureParts.forEach((part, index) => {
     const errors = wrongLetters.length;
-    index < errors ? (part.style.display = "block") : (part.style.display = "none");
+    part.style.display = index < errors ? "block" : "none";
   });
+
   if (wrongLetters.length === figureParts.length) {
     finalMessage.innerText = `Sorry ${playerName}, you lost. 😕`;
     finalMessageRevealWord.innerText = `...the word was: ${selectedWord}`;
     popup.style.display = "flex";
     playable = false;
-    // Push name_not_guessed event to dataLayer
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: "name_not_guessed",
@@ -153,19 +205,17 @@ function updateWrongLettersElement() {
     });
   }
 }
+
 // Show "already entered letter" notification
 function showNotification() {
   notification.classList.add("show");
-  setTimeout(() => {
-    notification.classList.remove("show");
-  }, 2000);
+  setTimeout(() => notification.classList.remove("show"), 2000);
 }
+
 // Handle letter input logic common for keyboard and on-screen
 function handleLetter(letter) {
-  if (!letter || letter.length !== 1 || letter < 'a' || letter > 'z') {
-    // prevent invalid empty or non-single letters from triggering notification
-    return;
-  }
+  if (!letter || letter.length !== 1 || letter < 'a' || letter > 'z') return;
+
   if (selectedWord.includes(letter)) {
     if (!correctLetters.includes(letter)) {
       correctLetters.push(letter);
@@ -184,6 +234,7 @@ function handleLetter(letter) {
     }
   }
 }
+
 // Disable a keyboard button after it has been clicked
 function disableKeyboardButton(letter) {
   const button = keyboardContainer.querySelector(`button[data-letter="${letter}"]`);
@@ -192,6 +243,7 @@ function disableKeyboardButton(letter) {
     button.disabled = true;
   }
 }
+
 // Listen for physical keyboard events (desktop)
 window.addEventListener("keypress", (e) => {
   if (playable) {
@@ -201,6 +253,7 @@ window.addEventListener("keypress", (e) => {
     }
   }
 });
+
 // Restart the game
 playAgainButton.addEventListener("click", () => {
   startGame();

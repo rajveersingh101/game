@@ -1,3 +1,9 @@
+const nameScreen = document.getElementById("name-screen");
+const nameInput = document.getElementById("name-input");
+const nameSubmit = document.getElementById("name-submit");
+const nameError = document.getElementById("name-error");
+
+const gameScreen = document.getElementById("game-screen");
 const wordElement = document.getElementById("word");
 const wrongLettersElement = document.getElementById("wrong-letters");
 const playAgainButton = document.getElementById("play-button");
@@ -33,10 +39,65 @@ const words = [
   "node",
 ];
 
-let selectedWord = words[Math.floor(Math.random() * words.length)];
-let playable = true;
+let selectedWord = "";
+let playable = false;
 const correctLetters = [];
 const wrongLetters = [];
+let playerName = "";
+
+// Validate name input - only letters, max 15 chars
+function validateName(name) {
+  const regex = /^[a-zA-Z]{1,15}$/;
+  return regex.test(name);
+}
+
+// Handle enabling/disabling submit button based on name input validity
+nameInput.addEventListener("input", () => {
+  const value = nameInput.value.trim();
+  if (validateName(value)) {
+    nameSubmit.disabled = false;
+    nameError.textContent = "";
+  } else {
+    nameSubmit.disabled = true;
+    if (value.length > 0) {
+      nameError.textContent = "Use letters only (1-15 chars)";
+    } else {
+      nameError.textContent = "";
+    }
+  }
+});
+
+// Start game on name submit
+nameSubmit.addEventListener("click", () => {
+  const name = nameInput.value.trim();
+  if (!validateName(name)) {
+    nameError.textContent = "Please enter a valid name (letters only, max 15 chars)";
+    return;
+  }
+  playerName = name;
+  // Push name_entered event to dataLayer
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "name_entered",
+    name: playerName,
+  });
+  // Switch screens
+  nameScreen.style.display = "none";
+  gameScreen.style.display = "block";
+  startGame();
+});
+
+function startGame() {
+  selectedWord = words[Math.floor(Math.random() * words.length)];
+  playable = true;
+  correctLetters.splice(0);
+  wrongLetters.splice(0);
+  displayWord();
+  updateWrongLettersElement();
+  createKeyboard();
+  popup.style.display = "none";
+  notification.classList.remove("show");
+}
 
 // Generate the on-screen keyboard buttons A-Z
 function createKeyboard() {
@@ -71,10 +132,16 @@ function displayWord() {
 
   const innerWord = wordElement.innerText.replace(/\n/g, "");
   if (innerWord === selectedWord) {
-    finalMessage.innerText = "Congratulations! You won! 😃";
+    finalMessage.innerText = `Congratulations ${playerName}! You won! 😃`;
     finalMessageRevealWord.innerText = "";
     popup.style.display = "flex";
     playable = false;
+    // Push name_guessed event to dataLayer
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "name_guessed",
+      name: playerName,
+    });
   }
 }
 
@@ -93,10 +160,16 @@ function updateWrongLettersElement() {
   });
 
   if (wrongLetters.length === figureParts.length) {
-    finalMessage.innerText = "Unfortunately you lost. 😕";
+    finalMessage.innerText = `Sorry ${playerName}, you lost. 😕`;
     finalMessageRevealWord.innerText = `...the word was: ${selectedWord}`;
     popup.style.display = "flex";
     playable = false;
+    // Push name_not_guessed event to dataLayer
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "name_not_guessed",
+      name: playerName,
+    });
   }
 }
 
@@ -152,17 +225,5 @@ window.addEventListener("keypress", (e) => {
 
 // Restart the game
 playAgainButton.addEventListener("click", () => {
-  playable = true;
-  correctLetters.splice(0);
-  wrongLetters.splice(0);
-  selectedWord = words[Math.floor(Math.random() * words.length)];
-  displayWord();
-  updateWrongLettersElement();
-  popup.style.display = "none";
-  createKeyboard();
+  startGame();
 });
-
-// Initialize game
-displayWord();
-updateWrongLettersElement();
-createKeyboard();
